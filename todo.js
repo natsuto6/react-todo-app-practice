@@ -4,13 +4,14 @@ class TodoApp extends React.Component {
     this.state = { items: [], text: "" };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   }
 
   render() {
     return (
       <div>
         <h3>TODO</h3>
-        <TodoList items={this.state.items} />
+        <TodoList items={this.state.items} handleRemove={this.handleRemove} />
         <form onSubmit={this.handleSubmit}>
           <label htmlFor="new-todo">What needs to be done?</label>
           <br/>
@@ -43,6 +44,12 @@ class TodoApp extends React.Component {
       text: "",
     }));
   }
+
+  handleRemove(id) {
+    this.setState(state => ({
+      items: state.items.filter(item => item.id !== id)
+    }));
+  }
 }
 
 class TodoList extends React.Component {
@@ -50,7 +57,10 @@ class TodoList extends React.Component {
     return (
       <ul>
         {this.props.items.map((item) => (
-          <li key={item.id}>{item.text}</li>
+          <li key={item.id}>
+            {item.text}
+            <button onClick={() => this.props.handleRemove(item.id)}>削除</button>
+          </li>
         ))}
       </ul>
     );
