@@ -12,6 +12,10 @@ class TodoApp extends React.Component {
     this.handleEdit = this.handleEdit.bind(this);
   }
 
+  componentDidUpdate() {
+    window.localStorage.setItem("todo-items", JSON.stringify(this.state.items));
+  }
+
   render() {
     return (
       <div>
@@ -57,7 +61,6 @@ class TodoApp extends React.Component {
     };
     this.setState((state) => {
       const updatedItems = state.items.concat(newItem);
-      window.localStorage.setItem("todo-items", JSON.stringify(updatedItems));
       return {
         items: updatedItems,
         text: "",
@@ -68,7 +71,6 @@ class TodoApp extends React.Component {
   handleRemove(id) {
     this.setState((state) => {
       const updatedItems = state.items.filter((item) => item.id !== id);
-      window.localStorage.setItem("todo-items", JSON.stringify(updatedItems));
       return {
         items: updatedItems,
       };
