@@ -17,14 +17,14 @@ class TodoApp extends React.Component {
       <div>
         <h3>TODO</h3>
         <form onSubmit={this.handleSubmit}>
-          <label htmlFor="new-todo">What needs to be done?</label>
+          <label htmlFor="new-todo">何をしますか？</label>
           <br />
           <input
             id="new-todo"
             onChange={this.handleChange}
             value={this.state.text}
           />
-          <button>Add #{this.state.items.length + 1}</button>
+          <button>追加 #{this.state.items.length + 1}</button>
         </form>
         <ul>
           {this.state.items.map((item) => (
@@ -85,7 +85,7 @@ class TodoApp extends React.Component {
               editing: isEditing,
               editText: text,
             }
-          : item
+          : item,
       );
       window.localStorage.setItem("todo-items", JSON.stringify(updatedItems));
       return {
@@ -117,7 +117,7 @@ class TodoItem extends React.Component {
               this.props.handleEdit(item.id, this.state.editText, false)
             }
           >
-            Done
+            完了
           </button>
         </li>
       );
@@ -125,7 +125,9 @@ class TodoItem extends React.Component {
       return (
         <li key={item.id}>
           {item.text}
-          <button onClick={() => this.props.handleEdit(item.id, "", true)}>編集</button>
+          <button onClick={() => this.props.handleEdit(item.id, "", true)}>
+            編集
+          </button>
           <button onClick={() => this.props.handleRemove(item.id)}>削除</button>
         </li>
       );
