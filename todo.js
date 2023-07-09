@@ -9,11 +9,8 @@ class TodoApp extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
-    this.handleEdit = this.handleEdit.bind(this);
-  }
-
-  componentDidUpdate() {
-    window.localStorage.setItem("todo-items", JSON.stringify(this.state.items));
+    this.handleStartEdit = this.handleStartEdit.bind(this);
+    this.handleEndEdit = this.handleEndEdit.bind(this);
   }
 
   render() {
@@ -36,7 +33,8 @@ class TodoApp extends React.Component {
               key={item.id}
               item={item}
               handleRemove={this.handleRemove}
-              handleEdit={this.handleEdit}
+              handleStartEdit={this.handleStartEdit}
+              handleEndEdit={this.handleEndEdit}
             />
           ))}
         </ul>
@@ -57,10 +55,10 @@ class TodoApp extends React.Component {
       text: this.state.text,
       id: Date.now(),
       editing: false,
-      editText: "",
     };
     this.setState((state) => {
       const updatedItems = state.items.concat(newItem);
+      window.localStorage.setItem("todo-items", JSON.stringify(updatedItems));
       return {
         items: updatedItems,
         text: "",
@@ -71,28 +69,30 @@ class TodoApp extends React.Component {
   handleRemove(id) {
     this.setState((state) => {
       const updatedItems = state.items.filter((item) => item.id !== id);
+      window.localStorage.setItem("todo-items", JSON.stringify(updatedItems));
       return {
         items: updatedItems,
       };
     });
   }
 
-  handleEdit(id, text, isEditing) {
+  handleStartEdit(id) {
     this.setState((state) => {
       const updatedItems = state.items.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              text: isEditing ? item.text : text,
-              editing: isEditing,
-              editText: text,
-            }
-          : item,
+        item.id === id ? { ...item, editing: true } : item,
       );
       window.localStorage.setItem("todo-items", JSON.stringify(updatedItems));
-      return {
-        items: updatedItems,
-      };
+      return { items: updatedItems };
+    });
+  }
+
+  handleEndEdit(id, text) {
+    this.setState((state) => {
+      const updatedItems = state.items.map((item) =>
+        item.id === id ? { ...item, text, editing: false } : item,
+      );
+      window.localStorage.setItem("todo-items", JSON.stringify(updatedItems));
+      return { items: updatedItems };
     });
   }
 }
@@ -110,30 +110,29 @@ class TodoItem extends React.Component {
 
   render() {
     const item = this.props.item;
-    if (item.editing) {
-      return (
-        <li key={item.id}>
+    return (
+      <li key={item.id}>
+        {item.editing ? (
           <input value={this.state.editText} onChange={this.handleEditChange} />
+        ) : (
+          item.text
+        )}
+        {item.editing ? (
           <button
             onClick={() =>
-              this.props.handleEdit(item.id, this.state.editText, false)
+              this.props.handleEndEdit(item.id, this.state.editText)
             }
           >
             完了
           </button>
-        </li>
-      );
-    } else {
-      return (
-        <li key={item.id}>
-          {item.text}
-          <button onClick={() => this.props.handleEdit(item.id, "", true)}>
+        ) : (
+          <button onClick={() => this.props.handleStartEdit(item.id)}>
             編集
           </button>
-          <button onClick={() => this.props.handleRemove(item.id)}>削除</button>
-        </li>
-      );
-    }
+        )}
+        <button onClick={() => this.props.handleRemove(item.id)}>削除</button>
+      </li>
+    );
   }
 }
 
