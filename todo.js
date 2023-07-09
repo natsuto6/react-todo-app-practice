@@ -1,7 +1,11 @@
 class TodoApp extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { items: [], text: "" };
+    const savedItems = window.localStorage.getItem("todo-items");
+    this.state = {
+      items: savedItems ? JSON.parse(savedItems) : [],
+      text: "",
+    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
@@ -51,21 +55,29 @@ class TodoApp extends React.Component {
       editing: false,
       editText: "",
     };
-    this.setState((state) => ({
-      items: state.items.concat(newItem),
-      text: "",
-    }));
+    this.setState((state) => {
+      const updatedItems = state.items.concat(newItem);
+      window.localStorage.setItem("todo-items", JSON.stringify(updatedItems));
+      return {
+        items: updatedItems,
+        text: "",
+      };
+    });
   }
 
   handleRemove(id) {
-    this.setState((state) => ({
-      items: state.items.filter((item) => item.id !== id),
-    }));
+    this.setState((state) => {
+      const updatedItems = state.items.filter((item) => item.id !== id);
+      window.localStorage.setItem("todo-items", JSON.stringify(updatedItems));
+      return {
+        items: updatedItems,
+      };
+    });
   }
 
   handleEdit(id, text, isEditing) {
-    this.setState((state) => ({
-      items: state.items.map((item) =>
+    this.setState((state) => {
+      const updatedItems = state.items.map((item) =>
         item.id === id
           ? {
               ...item,
@@ -74,8 +86,12 @@ class TodoApp extends React.Component {
               editText: text,
             }
           : item
-      ),
-    }));
+      );
+      window.localStorage.setItem("todo-items", JSON.stringify(updatedItems));
+      return {
+        items: updatedItems,
+      };
+    });
   }
 }
 
