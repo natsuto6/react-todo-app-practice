@@ -25,7 +25,7 @@ class TodoApp extends React.Component {
             onChange={this.handleChange}
             value={this.state.text}
           />
-          <button>追加 #{this.state.items.length + 1}</button>
+          <button>追加</button>
         </form>
         <ul>
           {this.state.items.map((item) => (
