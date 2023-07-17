@@ -1,1 +1,25 @@
-/* Write your CSS if you want */
+body {
+  font-family: Arial, sans-serif;
+}
+
+form {
+  margin-bottom: 1em;
+}
+
+input,
+button {
+  margin-top: 0.5em;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 0.5em 0;
+}
+
+button {
+  margin-left: 0.5em;
+}
